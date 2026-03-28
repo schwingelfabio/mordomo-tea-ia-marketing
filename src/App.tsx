@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react';
 import { LayoutDashboard, FileText, Settings, Zap, Play, History, Bot, Menu, X, Clipboard, ShieldCheck, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { AppConfig, DailyMission, QueueItem, ConnectedAccount, PublicationQueueItem } from './types';
+import { AppConfig, DailyMission, QueueItem, PublicationQueueItem } from './types';
 import { getConfig, saveConfig } from './lib/store';
 import { runAutonomousEngine } from './lib/autonomousEngine';
 import { generateContent } from './lib/ai';
@@ -71,39 +71,48 @@ export default function App() {
     const linkDoacao = config.paypalLink || 'https://www.paypal.com/donate/?hosted_button_id=QFNBCLB7HH3QE';
     const chavePix = config.pixKey || '01244056065';
     const nomePix = config.name || 'Fábio Schwingel';
+    const revolut = config.revolutDetails || 'Revolut: @fabioschwingel';
 
     try {
       const prompt = `Gere o conteúdo diário para o Fabio, considerando:
       - Filha: Victoria (TEA)
       - Projetos: Conecta TEA e Triagem TEA IA
       - Objetivo: ${isConversao ? 'Captação de recursos/doações EXTREMAMENTE URGENTE' : 'Crescimento e engajamento'}
-      - Tom: Emocional e humano
-      - Idiomas: Português do Brasil e Inglês
-      ${isConversao ? `- OBRIGATÓRIO: Os campos 'cta' e 'cta' (en) DEVEM conter o link de doação do PayPal (${linkDoacao}) E a chave Pix (CPF: ${chavePix} - Nome: ${nomePix})` : ''}
+      
+      DIRETRIZES DE IDIOMA E CONVERSÃO:
+      - PORTUGUÊS: Linguagem emocional brasileira. ${isConversao ? `OBRIGATÓRIO priorizar PIX e PayPal no CTA. Chave Pix: ${chavePix} (${nomePix}). PayPal: ${linkDoacao}` : ''}
+      - INGLÊS: Linguagem mais direta e internacional. ${isConversao ? `OBRIGATÓRIO priorizar PayPal e Revolut no CTA. PayPal: ${linkDoacao}. Revolut: ${revolut}` : ''}
+      
+      DIRETRIZES DE REDE SOCIAL (Para ambos os idiomas):
+      - Instagram: texto mais emocional e com emojis.
+      - LinkedIn: texto mais profissional e focado em impacto/propósito.
+      - Facebook: texto equilibrado e comunitário.
       
       Retorne APENAS um JSON válido com a seguinte estrutura exata:
       {
         "pt": {
           "missao": "Missão do dia (foco e objetivo)",
-          "post": "Conteúdo do post pronto",
-          "legenda": "Legenda pronta para o post",
-          "cta": "${isConversao ? 'Call to action forte e emocional INCLUINDO o link do PayPal e a chave Pix' : 'Call to action pronto'}",
+          "instagram": { "post": "Conteúdo do post IG", "legenda": "Legenda IG" },
+          "linkedin": { "post": "Conteúdo do post LI", "legenda": "Legenda LI" },
+          "facebook": { "post": "Conteúdo do post FB", "legenda": "Legenda FB" },
+          "cta": "${isConversao ? 'CTA forte e emocional (PIX + PayPal)' : 'CTA pronto'}",
           "hashtags": "5 hashtags relevantes",
           "sugestaoStory": "Ideia e roteiro curto para um story",
           "sugestaoVideo": "Ideia e roteiro curto para um vídeo curto (Reels/TikTok)"
         },
         "en": {
           "mission": "Daily mission (focus and objective)",
-          "post": "Ready post content",
-          "caption": "Ready caption for the post",
-          "cta": "${isConversao ? 'Strong and emotional call to action INCLUDING PayPal link and Pix key' : 'Ready call to action'}",
+          "instagram": { "post": "IG post content", "caption": "IG caption" },
+          "linkedin": { "post": "LI post content", "caption": "LI caption" },
+          "facebook": { "post": "FB post content", "caption": "FB caption" },
+          "cta": "${isConversao ? 'Strong CTA (PayPal + Revolut)' : 'Ready CTA'}",
           "hashtags": "5 relevant hashtags",
           "story": "Idea and short script for a story",
-          "video": "Idea and short script for a short video (Reels/TikTok)"
+          "video": "Idea and short script for a short video"
         }
       }`;
 
-      const responseText = await generateContent(prompt, config, "Conteúdo Diário (Hoje) - PT e EN");
+      const responseText = await generateContent(prompt, config, "Conteúdo Diário (Hoje) - PT e EN Multi-Rede");
       
       const cleanedText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
       const data = JSON.parse(cleanedText);
@@ -111,25 +120,12 @@ export default function App() {
       // Garantia programática de que os links estão no CTA se for modo conversão
       if (isConversao) {
         if (data.pt && data.pt.cta) {
-          let appendedCTA_PT = false;
-          if (!data.pt.cta.includes(linkDoacao)) {
-            data.pt.cta = `${data.pt.cta}\n\n👉 Apoie nossa causa via PayPal: ${linkDoacao}`;
-            appendedCTA_PT = true;
-          }
-          if (!data.pt.cta.includes(chavePix)) {
-            data.pt.cta = `${data.pt.cta}${appendedCTA_PT ? '\n' : '\n\n'}👉 Ou doe via Pix (CPF): ${chavePix} - ${nomePix}`;
-          }
+          if (!data.pt.cta.includes(chavePix)) data.pt.cta += `\n\n👉 Pix (CPF): ${chavePix} - ${nomePix}`;
+          if (!data.pt.cta.includes(linkDoacao)) data.pt.cta += `\n👉 PayPal: ${linkDoacao}`;
         }
-        
         if (data.en && data.en.cta) {
-          let appendedCTA_EN = false;
-          if (!data.en.cta.includes(linkDoacao)) {
-            data.en.cta = `${data.en.cta}\n\n👉 Support our cause via PayPal: ${linkDoacao}`;
-            appendedCTA_EN = true;
-          }
-          if (!data.en.cta.includes(chavePix)) {
-            data.en.cta = `${data.en.cta}${appendedCTA_EN ? '\n' : '\n\n'}👉 Or donate via Pix (CPF - Brazil): ${chavePix} - ${nomePix}`;
-          }
+          if (!data.en.cta.includes(linkDoacao)) data.en.cta += `\n\n👉 PayPal: ${linkDoacao}`;
+          if (!data.en.cta.includes('Revolut') && !data.en.cta.includes(revolut)) data.en.cta += `\n👉 Revolut: ${revolut}`;
         }
       }
       
@@ -138,23 +134,43 @@ export default function App() {
     } catch (error) {
       console.error("Error generating today content:", error);
       
-      // SIMULAÇÃO DE FALLBACK GARANTIDA (Conforme solicitado)
+      // SIMULAÇÃO DE FALLBACK GARANTIDA
       setTimeout(() => {
         const resultadoSimulado = {
           pt: {
             missao: "Gerar conexão emocional e arrecadar apoio para os tratamentos da Victoria.",
-            post: "Hoje é um dia especial. A Victória é a razão de tudo que eu faço. Cada pequeno avanço dela é uma vitória gigante para nós. A jornada do autismo nos ensina a valorizar cada detalhe, mas também traz desafios imensos que não podemos vencer sozinhos.",
-            legenda: "Estamos tentando manter os tratamentos e terapias em dia. Não tem sido fácil, mas a esperança é o que nos move. 🙏 Se você acompanha nossa história e acredita no projeto Conecta TEA, sua ajuda hoje seria fundamental.",
-            cta: `Se puder ajudar, qualquer valor faz diferença ❤️\n\n👉 Apoie nossa causa via PayPal: ${linkDoacao}\n👉 Ou doe via Pix (CPF): ${chavePix} - ${nomePix}`,
+            instagram: {
+              post: "Hoje é um dia especial. A Victória é a razão de tudo que eu faço. Cada pequeno avanço dela é uma vitória gigante para nós. ❤️",
+              legenda: "A jornada do autismo nos ensina a valorizar cada detalhe, mas também traz desafios imensos que não podemos vencer sozinhos. 🙏 Se você acompanha nossa história, sua ajuda hoje seria fundamental."
+            },
+            linkedin: {
+              post: "O projeto Conecta TEA nasceu de uma necessidade real: apoiar famílias atípicas. Hoje, compartilho mais um avanço da Victoria, que me motiva a continuar construindo soluções de impacto.",
+              legenda: "A inclusão exige ação. Estamos buscando parceiros e apoiadores para expandir nosso alcance e garantir que os tratamentos continuem. Faça parte dessa rede de apoio."
+            },
+            facebook: {
+              post: "Amigos e família, hoje é um dia de celebrar as pequenas vitórias da Victoria! Cada passo dela nos enche de orgulho.",
+              legenda: "Nossa comunidade tem sido incrível. Para continuarmos com as terapias, precisamos da força de vocês. Qualquer contribuição nos ajuda a manter a esperança viva."
+            },
+            cta: `Se puder ajudar, qualquer valor faz diferença ❤️\n\n👉 Pix (CPF): ${chavePix} - ${nomePix}\n👉 PayPal: ${linkDoacao}`,
             hashtags: "#autismo #familia #ajuda #amor #conectatea",
             sugestaoStory: "Hoje é um dia de vitórias! 🎂 Mostre um momento real e sem filtros da rotina com a Victoria hoje. Fale sobre um desafio superado.",
             sugestaoVideo: "Vídeo emocional (15s) com uma música suave ao fundo, mostrando você trabalhando no projeto Conecta TEA enquanto explica o porquê de tudo isso."
           },
           en: {
             mission: "Generate emotional connection and raise support for Victoria's treatments.",
-            post: "Today is a special day. Victoria is the reason for everything I do. Every little progress she makes is a giant victory for us. The autism journey teaches us to value every detail, but it also brings immense challenges that we cannot overcome alone.",
-            caption: "We are trying to keep up with treatments and therapies. It hasn't been easy, but hope is what drives us. 🙏 If you follow our story and believe in the Conecta TEA project, your help today would be fundamental.",
-            cta: `If you can help, any amount makes a difference ❤️\n\n👉 Support our cause via PayPal: ${linkDoacao}\n👉 Or donate via Pix (CPF - Brazil): ${chavePix} - ${nomePix}`,
+            instagram: {
+              post: "Today is a special day. Victoria is the reason for everything I do. Every little progress she makes is a giant victory for us. ❤️",
+              caption: "The autism journey teaches us to value every detail, but it also brings immense challenges we cannot overcome alone. 🙏 If you follow our story, your help today is fundamental."
+            },
+            linkedin: {
+              post: "The Conecta TEA project was born from a real need: supporting atypical families. Today, I share another milestone from Victoria, motivating me to keep building impactful solutions.",
+              caption: "Inclusion requires action. We are looking for partners and supporters to expand our reach and ensure treatments continue. Join our support network."
+            },
+            facebook: {
+              post: "Friends and family, today is a day to celebrate Victoria's small victories! Every step she takes fills us with pride.",
+              caption: "Our community has been amazing. To continue with therapies, we need your strength. Any contribution helps us keep hope alive."
+            },
+            cta: `If you can help, any amount makes a difference ❤️\n\n👉 PayPal: ${linkDoacao}\n👉 Revolut: ${revolut}`,
             hashtags: "#autism #family #help #love #conectatea",
             story: "Today is a day of victories! 🎂 Show a real, unfiltered moment of your routine with Victoria today. Talk about an overcome challenge.",
             video: "Emotional video (15s) with soft background music, showing you working on the Conecta TEA project while explaining the reason behind it all."
