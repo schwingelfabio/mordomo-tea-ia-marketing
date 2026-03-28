@@ -66,10 +66,10 @@ export default function App() {
       // ... (keep existing code)
     }
     if (activeTab === 'Contas Conectadas') {
-      return <div className="text-neutral-400 p-4">Painel de Contas Conectadas (OAuth em desenvolvimento).</div>;
+      return <ConnectedAccounts accounts={connectedAccounts} onConnect={(p) => alert(`Conectar ${p}`)} onDisconnect={(p) => alert(`Desconectar ${p}`)} />;
     }
     if (activeTab === 'Central de Publicação') {
-      return <div className="text-neutral-400 p-4">Central de Publicação e Fila.</div>;
+      return <PublicationCentral publications={publications} onManualPublish={(id) => alert(`Publicar ${id}`)} />;
     }
     if (activeTab === 'Campanhas') {
       return <div className="text-neutral-400 p-4">Gerenciamento de Campanhas.</div>;
