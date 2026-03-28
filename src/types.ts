@@ -20,6 +20,24 @@ export interface AppConfig {
   dailyGoal: string;
 }
 
+export interface ConnectedAccount {
+  platform: 'instagram' | 'facebook' | 'tiktok' | 'youtube' | 'linkedin';
+  connected: boolean;
+  accountName?: string;
+  profileLink?: string;
+  permissions: string[];
+  lastSync: string;
+}
+
+export interface Publication {
+  id: string;
+  platform: 'instagram' | 'facebook' | 'tiktok' | 'youtube' | 'linkedin';
+  content: string;
+  status: 'pronto' | 'aguardando' | 'publicado' | 'falhou' | 'revisão';
+  scheduledFor?: string;
+  error?: string;
+}
+
 export interface GeneratedContent {
   id: string;
   type: 'post' | 'video' | 'image' | 'dm' | 'campaign' | 'donation' | 'comment' | 'story';

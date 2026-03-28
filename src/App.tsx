@@ -43,14 +43,10 @@ export default function App() {
 
   const tabs = [
     { name: 'Hoje', icon: LayoutDashboard },
-    { name: 'Posts', icon: FileText },
-    { name: 'Vídeos', icon: Video },
-    { name: 'Imagens', icon: ImageIcon },
-    { name: 'Mensagens', icon: MessageSquare },
-    { name: 'Confiança', icon: ShieldCheck },
-    { name: 'Doações', icon: DollarSign },
+    { name: 'Contas Conectadas', icon: ShieldCheck },
+    { name: 'Central de Publicação', icon: FileText },
     { name: 'Campanhas', icon: Target },
-    { name: 'Histórico', icon: History },
+    { name: 'Relatórios', icon: History },
     { name: 'Configurações', icon: Settings },
   ];
 
@@ -67,100 +63,22 @@ export default function App() {
 
   const renderTabContent = () => {
     if (activeTab === 'Hoje') {
-      return (
-        <div className="grid grid-cols-1 gap-6">
-          <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-xl">
-            <h3 className="font-bold text-lg mb-2 flex items-center gap-2 text-teal-400">
-              <Bot size={20} /> Missão do Dia
-            </h3>
-            {mission ? (
-              <div className="space-y-4">
-                <p className="text-neutral-400">{mission.mission}</p>
-                <div className="bg-neutral-800 p-4 rounded-lg">
-                  <h4 className="font-bold text-sm text-neutral-300">Foco: {mission.focus}</h4>
-                  <ul className="list-disc list-inside text-neutral-400 text-sm mt-2">
-                    {mission.tasks.map((task, i) => <li key={i}>{task}</li>)}
-                  </ul>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-neutral-800 p-4 rounded-lg">
-                    <h4 className="font-bold text-sm text-neutral-300">Post Instagram</h4>
-                    <p className="text-neutral-400 text-sm mt-2">{mission.instagramPost.content}</p>
-                    <button onClick={() => copyToClipboard(mission.instagramPost.content)} className="mt-2 text-xs text-teal-400 hover:text-teal-300 font-bold">Copiar</button>
-                  </div>
-                  <div className="bg-neutral-800 p-4 rounded-lg">
-                    <h4 className="font-bold text-sm text-neutral-300">Post Facebook</h4>
-                    <p className="text-neutral-400 text-sm mt-2">{mission.facebookPost.content}</p>
-                    <button onClick={() => copyToClipboard(mission.facebookPost.content)} className="mt-2 text-xs text-teal-400 hover:text-teal-300 font-bold">Copiar</button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <p className="text-neutral-400 mb-4">Gerar visibilidade e confiança para o Conecta TEA.</p>
-            )}
-            <button 
-              onClick={handleAutonomousExecution}
-              className="w-full flex items-center justify-center gap-2 px-4 py-4 bg-teal-900/30 text-teal-400 rounded-lg hover:bg-teal-900/50 mt-4 min-h-[48px]"
-            >
-              <Zap size={20} /> Executar tudo automaticamente
-            </button>
-          </div>
-          
-          {queue.length > 0 && (
-            <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-xl">
-              <h3 className="font-bold text-lg mb-4 flex items-center gap-2 text-teal-400">
-                <Clipboard size={20} /> Fila de Execução ({queue.length})
-              </h3>
-              <div className="space-y-3">
-                {queue.map(item => (
-                  <div key={item.id} className="bg-neutral-800 p-4 rounded-lg flex justify-between items-center min-h-[60px]">
-                    <div>
-                      <p className="font-bold">{item.title}</p>
-                      <span className="text-xs text-neutral-500 uppercase">{item.type}</span>
-                    </div>
-                    <button onClick={() => copyToClipboard(item.content)} className="px-4 py-2 bg-teal-600 rounded text-sm font-bold min-h-[44px]">Copiar</button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      );
+      // ... (keep existing code)
+    }
+    if (activeTab === 'Contas Conectadas') {
+      return <div className="text-neutral-400 p-4">Painel de Contas Conectadas (OAuth em desenvolvimento).</div>;
+    }
+    if (activeTab === 'Central de Publicação') {
+      return <div className="text-neutral-400 p-4">Central de Publicação e Fila.</div>;
+    }
+    if (activeTab === 'Campanhas') {
+      return <div className="text-neutral-400 p-4">Gerenciamento de Campanhas.</div>;
+    }
+    if (activeTab === 'Relatórios') {
+      return <div className="text-neutral-400 p-4">Relatórios de Desempenho.</div>;
     }
     if (activeTab === 'Configurações') {
-      return (
-        <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-xl space-y-4">
-          <h3 className="font-bold text-lg mb-4">Configurações do Mordomo</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="text" placeholder="Nome" value={config.name} onChange={e => setConfig({...config, name: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
-            <input type="text" placeholder="Nome da Filha" value={config.daughterName} onChange={e => setConfig({...config, daughterName: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
-            <textarea placeholder="História Curta" value={config.shortStory} onChange={e => setConfig({...config, shortStory: e.target.value})} className="w-full bg-neutral-800 p-4 rounded col-span-full min-h-[100px]" rows={3} />
-            <input type="text" placeholder="Website" value={config.website} onChange={e => setConfig({...config, website: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
-            <input type="text" placeholder="Instagram" value={config.instagram} onChange={e => setConfig({...config, instagram: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
-            <input type="text" placeholder="TikTok" value={config.tiktok} onChange={e => setConfig({...config, tiktok: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
-            <input type="text" placeholder="Facebook" value={config.facebook} onChange={e => setConfig({...config, facebook: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
-            <input type="text" placeholder="YouTube" value={config.youtube} onChange={e => setConfig({...config, youtube: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
-            <input type="text" placeholder="PayPal Email" value={config.paypalEmail} onChange={e => setConfig({...config, paypalEmail: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
-            <input type="text" placeholder="Chave Pix" value={config.pixKey} onChange={e => setConfig({...config, pixKey: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
-            <textarea placeholder="Detalhes Revolut" value={config.revolutDetails} onChange={e => setConfig({...config, revolutDetails: e.target.value})} className="w-full bg-neutral-800 p-4 rounded col-span-full min-h-[100px]" rows={3} />
-            <select value={config.preferredLanguage} onChange={e => setConfig({...config, preferredLanguage: e.target.value as 'en' | 'pt'})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]">
-              <option value="pt">Português</option>
-              <option value="en">English</option>
-            </select>
-            <input type="text" placeholder="Meta do Dia" value={config.dailyGoal} onChange={e => setConfig({...config, dailyGoal: e.target.value})} className="w-full bg-neutral-800 p-4 rounded col-span-full min-h-[48px]" />
-          <div className="bg-neutral-800 p-4 rounded-lg">
-            <h4 className="font-bold text-sm text-neutral-300 mb-2">Preview da Mensagem de Doação ({config.preferredLanguage === 'pt' ? 'Português' : 'English'})</h4>
-            <div className="text-neutral-400 text-sm whitespace-pre-line bg-neutral-950 p-4 rounded">
-              {config.preferredLanguage === 'pt' ? (
-                `💙 Ajude a continuar nossa missão\n\nChave Pix: ${config.pixKey}\n\nTodo apoio ajuda minha filha e este projeto a continuar 🙏`
-              ) : (
-                `💙 Support this mission\n\nPayPal:\n${config.paypalEmail}\n\nBank Transfer (Revolut):\n${config.revolutDetails}\n\nEvery support helps my daughter and this project continue 🙏`
-              )}
-            </div>
-          </div>
-        </div>
-        </div>
-      );
+      // ... (keep existing code)
     }
     return <div className="text-neutral-400 p-4">Conteúdo para {activeTab} em desenvolvimento.</div>;
   };
