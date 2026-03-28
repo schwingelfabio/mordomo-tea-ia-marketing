@@ -78,34 +78,58 @@ export default function App() {
       - Projetos: Conecta TEA e Triagem TEA IA
       - Objetivo: ${isConversao ? 'Captação de recursos/doações EXTREMAMENTE URGENTE' : 'Crescimento e engajamento'}
       - Tom: Emocional e humano
-      - Idioma: Português do Brasil
-      ${isConversao ? `- OBRIGATÓRIO: O campo 'cta' DEVE conter o link de doação do PayPal (${linkDoacao}) E a chave Pix (CPF: ${chavePix} - Nome: ${nomePix})` : ''}
+      - Idiomas: Português do Brasil e Inglês
+      ${isConversao ? `- OBRIGATÓRIO: Os campos 'cta' e 'cta' (en) DEVEM conter o link de doação do PayPal (${linkDoacao}) E a chave Pix (CPF: ${chavePix} - Nome: ${nomePix})` : ''}
       
       Retorne APENAS um JSON válido com a seguinte estrutura exata:
       {
-        "missao": "Missão do dia (foco e objetivo)",
-        "post": "Conteúdo do post pronto",
-        "legenda": "Legenda pronta para o post",
-        "cta": "${isConversao ? 'Call to action forte e emocional INCLUINDO o link do PayPal e a chave Pix' : 'Call to action pronto'}",
-        "hashtags": "5 hashtags relevantes",
-        "sugestaoStory": "Ideia e roteiro curto para um story",
-        "sugestaoVideo": "Ideia e roteiro curto para um vídeo curto (Reels/TikTok)"
+        "pt": {
+          "missao": "Missão do dia (foco e objetivo)",
+          "post": "Conteúdo do post pronto",
+          "legenda": "Legenda pronta para o post",
+          "cta": "${isConversao ? 'Call to action forte e emocional INCLUINDO o link do PayPal e a chave Pix' : 'Call to action pronto'}",
+          "hashtags": "5 hashtags relevantes",
+          "sugestaoStory": "Ideia e roteiro curto para um story",
+          "sugestaoVideo": "Ideia e roteiro curto para um vídeo curto (Reels/TikTok)"
+        },
+        "en": {
+          "mission": "Daily mission (focus and objective)",
+          "post": "Ready post content",
+          "caption": "Ready caption for the post",
+          "cta": "${isConversao ? 'Strong and emotional call to action INCLUDING PayPal link and Pix key' : 'Ready call to action'}",
+          "hashtags": "5 relevant hashtags",
+          "story": "Idea and short script for a story",
+          "video": "Idea and short script for a short video (Reels/TikTok)"
+        }
       }`;
 
-      const responseText = await generateContent(prompt, config, "Conteúdo Diário (Hoje)");
+      const responseText = await generateContent(prompt, config, "Conteúdo Diário (Hoje) - PT e EN");
       
       const cleanedText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
       const data = JSON.parse(cleanedText);
       
       // Garantia programática de que os links estão no CTA se for modo conversão
       if (isConversao) {
-        let appendedCTA = false;
-        if (!data.cta.includes(linkDoacao)) {
-          data.cta = `${data.cta}\n\n👉 Apoie nossa causa via PayPal: ${linkDoacao}`;
-          appendedCTA = true;
+        if (data.pt && data.pt.cta) {
+          let appendedCTA_PT = false;
+          if (!data.pt.cta.includes(linkDoacao)) {
+            data.pt.cta = `${data.pt.cta}\n\n👉 Apoie nossa causa via PayPal: ${linkDoacao}`;
+            appendedCTA_PT = true;
+          }
+          if (!data.pt.cta.includes(chavePix)) {
+            data.pt.cta = `${data.pt.cta}${appendedCTA_PT ? '\n' : '\n\n'}👉 Ou doe via Pix (CPF): ${chavePix} - ${nomePix}`;
+          }
         }
-        if (!data.cta.includes(chavePix)) {
-          data.cta = `${data.cta}${appendedCTA ? '\n' : '\n\n'}👉 Ou doe via Pix (CPF): ${chavePix} - ${nomePix}`;
+        
+        if (data.en && data.en.cta) {
+          let appendedCTA_EN = false;
+          if (!data.en.cta.includes(linkDoacao)) {
+            data.en.cta = `${data.en.cta}\n\n👉 Support our cause via PayPal: ${linkDoacao}`;
+            appendedCTA_EN = true;
+          }
+          if (!data.en.cta.includes(chavePix)) {
+            data.en.cta = `${data.en.cta}${appendedCTA_EN ? '\n' : '\n\n'}👉 Or donate via Pix (CPF - Brazil): ${chavePix} - ${nomePix}`;
+          }
         }
       }
       
@@ -115,17 +139,26 @@ export default function App() {
       console.error("Error generating today content:", error);
       
       // SIMULAÇÃO DE FALLBACK GARANTIDA (Conforme solicitado)
-      // Se a IA falhar por limite de tokens ou erro de API, mostramos o resultado simulado
-      // para garantir que a interface funcione visualmente.
       setTimeout(() => {
         const resultadoSimulado = {
-          missao: "Gerar conexão emocional e arrecadar apoio para os tratamentos da Victoria.",
-          post: "Hoje é um dia especial. A Victória é a razão de tudo que eu faço. Cada pequeno avanço dela é uma vitória gigante para nós. A jornada do autismo nos ensina a valorizar cada detalhe, mas também traz desafios imensos que não podemos vencer sozinhos.",
-          legenda: "Estamos tentando manter os tratamentos e terapias em dia. Não tem sido fácil, mas a esperança é o que nos move. 🙏 Se você acompanha nossa história e acredita no projeto Conecta TEA, sua ajuda hoje seria fundamental.",
-          cta: `Se puder ajudar, qualquer valor faz diferença ❤️\n\n👉 Apoie nossa causa via PayPal: ${linkDoacao}\n👉 Ou doe via Pix (CPF): ${chavePix} - ${nomePix}`,
-          hashtags: "#autismo #familia #ajuda #amor #conectatea",
-          sugestaoStory: "Hoje é um dia de vitórias! 🎂 Mostre um momento real e sem filtros da rotina com a Victoria hoje. Fale sobre um desafio superado.",
-          sugestaoVideo: "Vídeo emocional (15s) com uma música suave ao fundo, mostrando você trabalhando no projeto Conecta TEA enquanto explica o porquê de tudo isso."
+          pt: {
+            missao: "Gerar conexão emocional e arrecadar apoio para os tratamentos da Victoria.",
+            post: "Hoje é um dia especial. A Victória é a razão de tudo que eu faço. Cada pequeno avanço dela é uma vitória gigante para nós. A jornada do autismo nos ensina a valorizar cada detalhe, mas também traz desafios imensos que não podemos vencer sozinhos.",
+            legenda: "Estamos tentando manter os tratamentos e terapias em dia. Não tem sido fácil, mas a esperança é o que nos move. 🙏 Se você acompanha nossa história e acredita no projeto Conecta TEA, sua ajuda hoje seria fundamental.",
+            cta: `Se puder ajudar, qualquer valor faz diferença ❤️\n\n👉 Apoie nossa causa via PayPal: ${linkDoacao}\n👉 Ou doe via Pix (CPF): ${chavePix} - ${nomePix}`,
+            hashtags: "#autismo #familia #ajuda #amor #conectatea",
+            sugestaoStory: "Hoje é um dia de vitórias! 🎂 Mostre um momento real e sem filtros da rotina com a Victoria hoje. Fale sobre um desafio superado.",
+            sugestaoVideo: "Vídeo emocional (15s) com uma música suave ao fundo, mostrando você trabalhando no projeto Conecta TEA enquanto explica o porquê de tudo isso."
+          },
+          en: {
+            mission: "Generate emotional connection and raise support for Victoria's treatments.",
+            post: "Today is a special day. Victoria is the reason for everything I do. Every little progress she makes is a giant victory for us. The autism journey teaches us to value every detail, but it also brings immense challenges that we cannot overcome alone.",
+            caption: "We are trying to keep up with treatments and therapies. It hasn't been easy, but hope is what drives us. 🙏 If you follow our story and believe in the Conecta TEA project, your help today would be fundamental.",
+            cta: `If you can help, any amount makes a difference ❤️\n\n👉 Support our cause via PayPal: ${linkDoacao}\n👉 Or donate via Pix (CPF - Brazil): ${chavePix} - ${nomePix}`,
+            hashtags: "#autism #family #help #love #conectatea",
+            story: "Today is a day of victories! 🎂 Show a real, unfiltered moment of your routine with Victoria today. Talk about an overcome challenge.",
+            video: "Emotional video (15s) with soft background music, showing you working on the Conecta TEA project while explaining the reason behind it all."
+          }
         };
         setGeneratedTodayData(resultadoSimulado);
         setIsGeneratingToday(false);
