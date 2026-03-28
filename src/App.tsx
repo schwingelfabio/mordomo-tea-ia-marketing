@@ -11,6 +11,7 @@ import { getConfig, saveConfig } from './lib/store';
 import { runAutonomousEngine } from './lib/autonomousEngine';
 import { ConnectedAccounts } from './components/ConnectedAccounts';
 import { PublicationDashboard } from './components/PublicationDashboard';
+import { Settings as SettingsComponent } from './components/Settings';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('Hoje');
@@ -86,35 +87,8 @@ export default function App() {
     alert('Operação Completa executada com sucesso!');
   };
 
-  const handleConnect = async (platform: string) => {
-    try {
-      const response = await fetch(`/api/auth/${platform}`);
-      if (!response.ok) throw new Error('Falha ao obter URL de autenticação');
-      const { url } = await response.json();
-
-      const authWindow = window.open(url, 'oauth_popup', 'width=600,height=700');
-      if (!authWindow) {
-        alert('Por favor, permita popups para conectar sua conta.');
-        return;
-      }
-
-      const handleMessage = (event: MessageEvent) => {
-        if (event.data?.type === 'OAUTH_AUTH_SUCCESS') {
-          alert(`Conta ${platform} conectada com sucesso!`);
-          setConnectedAccounts(prev => prev.map(a => a.platform === platform ? { ...a, connected: true, accountName: 'Usuário Exemplo', lastSync: new Date().toLocaleDateString() } : a));
-          window.removeEventListener('message', handleMessage);
-        }
-      };
-      window.addEventListener('message', handleMessage);
-    } catch (error) {
-      console.error('Erro de OAuth:', error);
-      alert('Erro ao conectar conta. Tente novamente.');
-    }
-  };
-
-  const handleDisconnect = (platform: string) => {
-    setConnectedAccounts(prev => prev.map(a => a.platform === platform ? { ...a, connected: false, accountName: undefined } : a));
-    alert(`Conta ${platform} desconectada.`);
+  const handleToggleConnection = (platform: string) => {
+    setConnectedAccounts(prev => prev.map(a => a.platform === platform ? { ...a, connected: !a.connected } : a));
   };
 
   const handleGenerateContent = (data: any) => {
@@ -135,7 +109,7 @@ export default function App() {
       return <div className="text-neutral-400 p-4">Conteúdo para Hoje em desenvolvimento.</div>;
     }
     if (activeTab === 'Contas Conectadas') {
-      return <ConnectedAccounts accounts={connectedAccounts} onConnect={handleConnect} onDisconnect={handleDisconnect} />;
+      return <ConnectedAccounts accounts={connectedAccounts} onToggleConnection={handleToggleConnection} />;
     }
     if (activeTab === 'Central de Publicação') {
       return <PublicationDashboard 
@@ -154,7 +128,7 @@ export default function App() {
       return <div className="text-neutral-400 p-4">Relatórios de Desempenho.</div>;
     }
     if (activeTab === 'Configurações') {
-      return <div className="text-neutral-400 p-4">Configurações em desenvolvimento.</div>;
+      return <SettingsComponent config={config} onSetConfig={setConfig} />;
     }
     return <div className="text-neutral-400 p-4">Conteúdo para {activeTab} em desenvolvimento.</div>;
   };

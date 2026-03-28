@@ -21,11 +21,18 @@ export const PublicationQueue: React.FC<Props> = ({ queue }) => {
               </span>
             </div>
             <div className="flex gap-2">
-              <button className="p-2 hover:bg-neutral-700 rounded"><Play size={16} /></button>
-              <button className="p-2 hover:bg-neutral-700 rounded"><Calendar size={16} /></button>
-              <button className="p-2 hover:bg-neutral-700 rounded"><Edit size={16} /></button>
-              <button className="p-2 hover:bg-neutral-700 rounded"><Copy size={16} /></button>
-              <button className="p-2 hover:bg-neutral-700 rounded text-red-400"><Trash2 size={16} /></button>
+              <button 
+                onClick={() => navigator.clipboard.writeText(item.content)}
+                className="flex items-center gap-1 px-3 py-1.5 bg-neutral-700 hover:bg-neutral-600 rounded text-xs"
+              >
+                <Copy size={14} /> Copiar
+              </button>
+              <button 
+                onClick={() => window.open(`https://${item.platform}.com`, '_blank')}
+                className="flex items-center gap-1 px-3 py-1.5 bg-teal-900/30 hover:bg-teal-900/50 text-teal-400 rounded text-xs"
+              >
+                <ExternalLink size={14} /> Abrir {item.platform}
+              </button>
             </div>
           </div>
         ))}
