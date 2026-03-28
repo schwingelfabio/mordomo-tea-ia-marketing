@@ -7,47 +7,26 @@ export const runAutonomousEngine = async (config: AppConfig): Promise<{ mission:
   Priorize: 1. Dinheiro rápido, 2. Confiança, 3. Crescimento, 4. Relacionamento.
   
   Retorne APENAS um JSON com os campos:
-  mission, focus, tasks (array), recommendedAction, mainPost (object: title, content), commentStrategies (array: title, content), dmScripts (array: title, content), storySequence (array: title, content).`;
+  mission, focus, tasks (array), recommendedAction, instagramPost (object: title, content), facebookPost (object: title, content), videoScript (object: title, content), youtubeShortScript (object: title, content), viralComments (array: title, content), dmScripts (array: title, content), storySequence (array: title, content), donationMessage (object: title, content).`;
   
   const missionText = await generateContent(missionPrompt, config, "DailyMission");
-  const mission: DailyMission = JSON.parse(missionText);
+  
+  let mission: DailyMission;
+  try {
+    mission = JSON.parse(missionText);
+  } catch (e) {
+    console.error("Failed to parse mission JSON:", missionText);
+    throw new Error("Falha ao gerar missão diária. Tente novamente.");
+  }
   mission.date = new Date().toISOString();
 
-  // 2. Generate Campaign
-  const campaignPrompt = `Crie uma campanha completa para o projeto ${config.currentCampaignObjective}.
-  O objetivo é ${config.dailyGoal}.
-  O público é ${config.targetAudience}.
-  O tom deve ser ${config.preferredTone}.
-  
-  Retorne APENAS um JSON com os campos:
-  name, objective, targetAudience, tone, narrative, feedPost, videoScript, storySequence (array), privateMessage, donationText, finalCTA.`;
-  
-  const campaignText = await generateContent(campaignPrompt, config, "Campaign");
-  const campaign: Campaign = JSON.parse(campaignText);
-
-  // 3. Generate Content Queue
+  // 2. Generate Content Queue
   const queue: QueueItem[] = [
-    {
-      id: 'campaign',
-      title: `Campanha: ${campaign.name}`,
-      type: 'campaign',
-      status: 'ready',
-      content: JSON.stringify(campaign)
-    },
-    {
-      id: '1',
-      title: 'Post Emocional de Conversão',
-      type: 'post',
-      status: 'ready',
-      content: campaign.feedPost
-    },
-    {
-      id: '2',
-      title: 'Vídeo de Confiança',
-      type: 'video',
-      status: 'ready',
-      content: campaign.videoScript
-    }
+    { id: '1', title: 'Post Instagram', type: 'post', status: 'ready', content: mission.instagramPost.content },
+    { id: '2', title: 'Post Facebook', type: 'post', status: 'ready', content: mission.facebookPost.content },
+    { id: '3', title: 'Roteiro Vídeo', type: 'video', status: 'ready', content: mission.videoScript.content },
+    { id: '4', title: 'YouTube Short', type: 'video', status: 'ready', content: mission.youtubeShortScript.content },
+    { id: '5', title: 'Mensagem Doação', type: 'donation', status: 'ready', content: mission.donationMessage.content }
   ];
 
   return { mission, queue };

@@ -82,10 +82,17 @@ export default function App() {
                     {mission.tasks.map((task, i) => <li key={i}>{task}</li>)}
                   </ul>
                 </div>
-                <div className="bg-neutral-800 p-4 rounded-lg">
-                  <h4 className="font-bold text-sm text-neutral-300">Post Principal: {mission.mainPost.title}</h4>
-                  <p className="text-neutral-400 text-sm mt-2">{mission.mainPost.content}</p>
-                  <button onClick={() => copyToClipboard(mission.mainPost.content)} className="mt-2 text-xs text-teal-400 hover:text-teal-300 font-bold">Copiar Post</button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-neutral-800 p-4 rounded-lg">
+                    <h4 className="font-bold text-sm text-neutral-300">Post Instagram</h4>
+                    <p className="text-neutral-400 text-sm mt-2">{mission.instagramPost.content}</p>
+                    <button onClick={() => copyToClipboard(mission.instagramPost.content)} className="mt-2 text-xs text-teal-400 hover:text-teal-300 font-bold">Copiar</button>
+                  </div>
+                  <div className="bg-neutral-800 p-4 rounded-lg">
+                    <h4 className="font-bold text-sm text-neutral-300">Post Facebook</h4>
+                    <p className="text-neutral-400 text-sm mt-2">{mission.facebookPost.content}</p>
+                    <button onClick={() => copyToClipboard(mission.facebookPost.content)} className="mt-2 text-xs text-teal-400 hover:text-teal-300 font-bold">Copiar</button>
+                  </div>
                 </div>
               </div>
             ) : (

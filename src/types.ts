@@ -37,10 +37,14 @@ export interface DailyMission {
   focus: string;
   tasks: string[];
   recommendedAction: string;
-  mainPost: GeneratedContent;
-  commentStrategies: GeneratedContent[];
+  instagramPost: GeneratedContent;
+  facebookPost: GeneratedContent;
+  videoScript: GeneratedContent;
+  youtubeShortScript: GeneratedContent;
+  viralComments: GeneratedContent[];
   dmScripts: GeneratedContent[];
   storySequence: GeneratedContent[];
+  donationMessage: GeneratedContent;
 }
 
 export interface Campaign {
