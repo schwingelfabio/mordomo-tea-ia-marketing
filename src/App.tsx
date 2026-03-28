@@ -118,10 +118,30 @@ export default function App() {
             <input type="text" placeholder="Nome" value={config.name} onChange={e => setConfig({...config, name: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
             <input type="text" placeholder="Nome da Filha" value={config.daughterName} onChange={e => setConfig({...config, daughterName: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
             <textarea placeholder="História Curta" value={config.shortStory} onChange={e => setConfig({...config, shortStory: e.target.value})} className="w-full bg-neutral-800 p-4 rounded col-span-full min-h-[100px]" rows={3} />
+            <input type="text" placeholder="Website" value={config.website} onChange={e => setConfig({...config, website: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
+            <input type="text" placeholder="Instagram" value={config.instagram} onChange={e => setConfig({...config, instagram: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
+            <input type="text" placeholder="TikTok" value={config.tiktok} onChange={e => setConfig({...config, tiktok: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
+            <input type="text" placeholder="Facebook" value={config.facebook} onChange={e => setConfig({...config, facebook: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
+            <input type="text" placeholder="YouTube" value={config.youtube} onChange={e => setConfig({...config, youtube: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
             <input type="text" placeholder="PayPal Email" value={config.paypalEmail} onChange={e => setConfig({...config, paypalEmail: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
             <input type="text" placeholder="Chave Pix" value={config.pixKey} onChange={e => setConfig({...config, pixKey: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
+            <textarea placeholder="Detalhes Revolut" value={config.revolutDetails} onChange={e => setConfig({...config, revolutDetails: e.target.value})} className="w-full bg-neutral-800 p-4 rounded col-span-full min-h-[100px]" rows={3} />
+            <select value={config.preferredLanguage} onChange={e => setConfig({...config, preferredLanguage: e.target.value as 'en' | 'pt'})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]">
+              <option value="pt">Português</option>
+              <option value="en">English</option>
+            </select>
             <input type="text" placeholder="Meta do Dia" value={config.dailyGoal} onChange={e => setConfig({...config, dailyGoal: e.target.value})} className="w-full bg-neutral-800 p-4 rounded col-span-full min-h-[48px]" />
+          <div className="bg-neutral-800 p-4 rounded-lg">
+            <h4 className="font-bold text-sm text-neutral-300 mb-2">Preview da Mensagem de Doação ({config.preferredLanguage === 'pt' ? 'Português' : 'English'})</h4>
+            <div className="text-neutral-400 text-sm whitespace-pre-line bg-neutral-950 p-4 rounded">
+              {config.preferredLanguage === 'pt' ? (
+                `💙 Ajude a continuar nossa missão\n\nChave Pix: ${config.pixKey}\n\nTodo apoio ajuda minha filha e este projeto a continuar 🙏`
+              ) : (
+                `💙 Support this mission\n\nPayPal:\n${config.paypalEmail}\n\nBank Transfer (Revolut):\n${config.revolutDetails}\n\nEvery support helps my daughter and this project continue 🙏`
+              )}
+            </div>
           </div>
+        </div>
         </div>
       );
     }
