@@ -14,13 +14,29 @@ async function startServer() {
   // OAuth endpoints
   app.get("/api/auth/:platform", (req, res) => {
     const { platform } = req.params;
-    // Redirect to official OAuth URL
-    res.json({ url: `https://auth.example.com/${platform}/authorize` });
+    // In a real app, you would construct the official OAuth URL here
+    // e.g., https://www.facebook.com/v12.0/dialog/oauth?client_id=...
+    const authUrl = `https://auth.example.com/${platform}/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=${process.env.APP_URL}/api/auth/${platform}/callback&scope=email,public_profile`;
+    res.json({ url: authUrl });
   });
 
   app.get("/api/auth/:platform/callback", (req, res) => {
-    // Handle OAuth callback
-    res.send("Autenticado com sucesso!");
+    // Handle OAuth callback: exchange code for token, save token securely
+    res.send(`
+      <html>
+        <body>
+          <script>
+            if (window.opener) {
+              window.opener.postMessage({ type: 'OAUTH_AUTH_SUCCESS' }, '*');
+              window.close();
+            } else {
+              window.location.href = '/';
+            }
+          </script>
+          <p>Autenticação realizada com sucesso. Esta janela será fechada automaticamente.</p>
+        </body>
+      </html>
+    `);
   });
 
   // Vite middleware for development

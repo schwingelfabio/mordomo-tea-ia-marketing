@@ -29,12 +29,17 @@ export interface ConnectedAccount {
   lastSync: string;
 }
 
-export interface Publication {
+export type PublicationStatus = 'pronto' | 'publicando' | 'publicado' | 'agendado' | 'falhou' | 'reconectar' | 'manual';
+
+export interface PublicationQueueItem {
   id: string;
+  type: 'post' | 'video' | 'story' | 'campanha' | 'apoio' | 'doacao' | 'confianca';
   platform: 'instagram' | 'facebook' | 'tiktok' | 'youtube' | 'linkedin';
-  content: string;
-  status: 'pronto' | 'aguardando' | 'publicado' | 'falhou' | 'revisão';
+  status: PublicationStatus;
   scheduledFor?: string;
+  content: string;
+  cta: string;
+  language: 'en' | 'pt';
   error?: string;
 }
 

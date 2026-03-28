@@ -4,11 +4,13 @@
  */
 
 import { useState, useEffect } from 'react';
-import { LayoutDashboard, FileText, Video, Image as ImageIcon, MessageSquare, ShieldCheck, DollarSign, Target, Settings, Zap, Play, History, Bot, Menu, X, Clipboard } from 'lucide-react';
+import { LayoutDashboard, FileText, Settings, Zap, Play, History, Bot, Menu, X, Clipboard, ShieldCheck, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { AppConfig, DailyMission, QueueItem } from './types';
+import { AppConfig, DailyMission, QueueItem, ConnectedAccount, PublicationQueueItem } from './types';
 import { getConfig, saveConfig } from './lib/store';
 import { runAutonomousEngine } from './lib/autonomousEngine';
+import { ConnectedAccounts } from './components/ConnectedAccounts';
+import { PublicationDashboard } from './components/PublicationDashboard';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('Hoje');
@@ -37,6 +39,16 @@ export default function App() {
     dailyGoal: ''
   });
 
+  const [connectedAccounts, setConnectedAccounts] = useState<ConnectedAccount[]>([
+    { platform: 'instagram', connected: false, permissions: [], lastSync: 'Nunca' },
+    { platform: 'facebook', connected: false, permissions: [], lastSync: 'Nunca' },
+    { platform: 'linkedin', connected: false, permissions: [], lastSync: 'Nunca' },
+    { platform: 'youtube', connected: false, permissions: [], lastSync: 'Nunca' },
+    { platform: 'tiktok', connected: false, permissions: [], lastSync: 'Nunca' },
+  ]);
+
+  const [publicationQueue, setPublicationQueue] = useState<PublicationQueueItem[]>([]);
+
   useEffect(() => {
     saveConfig(config);
   }, [config]);
@@ -56,20 +68,59 @@ export default function App() {
     setQueue(result.queue);
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    alert('Copiado para a área de transferência!');
+  const handleConnect = async (platform: string) => {
+    try {
+      const response = await fetch(`/api/auth/${platform}`);
+      if (!response.ok) throw new Error('Falha ao obter URL de autenticação');
+      const { url } = await response.json();
+
+      const authWindow = window.open(url, 'oauth_popup', 'width=600,height=700');
+      if (!authWindow) {
+        alert('Por favor, permita popups para conectar sua conta.');
+        return;
+      }
+
+      const handleMessage = (event: MessageEvent) => {
+        if (event.data?.type === 'OAUTH_AUTH_SUCCESS') {
+          alert(`Conta ${platform} conectada com sucesso!`);
+          setConnectedAccounts(prev => prev.map(a => a.platform === platform ? { ...a, connected: true, accountName: 'Usuário Exemplo', lastSync: new Date().toLocaleDateString() } : a));
+          window.removeEventListener('message', handleMessage);
+        }
+      };
+      window.addEventListener('message', handleMessage);
+    } catch (error) {
+      console.error('Erro de OAuth:', error);
+      alert('Erro ao conectar conta. Tente novamente.');
+    }
+  };
+
+  const handleDisconnect = (platform: string) => {
+    setConnectedAccounts(prev => prev.map(a => a.platform === platform ? { ...a, connected: false, accountName: undefined } : a));
+    alert(`Conta ${platform} desconectada.`);
+  };
+
+  const handleGenerateContent = (data: any) => {
+    alert(`Gerando conteúdo: ${JSON.stringify(data)}`);
+    setPublicationQueue(prev => [...prev, {
+      id: Date.now().toString(),
+      type: 'post',
+      platform: 'instagram',
+      status: 'pronto',
+      content: 'Conteúdo gerado automaticamente...',
+      cta: 'Doe agora!',
+      language: 'pt'
+    }]);
   };
 
   const renderTabContent = () => {
     if (activeTab === 'Hoje') {
-      // ... (keep existing code)
+      return <div className="text-neutral-400 p-4">Conteúdo para Hoje em desenvolvimento.</div>;
     }
     if (activeTab === 'Contas Conectadas') {
-      return <ConnectedAccounts accounts={connectedAccounts} onConnect={(p) => alert(`Conectar ${p}`)} onDisconnect={(p) => alert(`Desconectar ${p}`)} />;
+      return <ConnectedAccounts accounts={connectedAccounts} onConnect={handleConnect} onDisconnect={handleDisconnect} />;
     }
     if (activeTab === 'Central de Publicação') {
-      return <PublicationCentral publications={publications} onManualPublish={(id) => alert(`Publicar ${id}`)} />;
+      return <PublicationDashboard accounts={connectedAccounts} queue={publicationQueue} onGenerate={handleGenerateContent} />;
     }
     if (activeTab === 'Campanhas') {
       return <div className="text-neutral-400 p-4">Gerenciamento de Campanhas.</div>;
@@ -78,14 +129,13 @@ export default function App() {
       return <div className="text-neutral-400 p-4">Relatórios de Desempenho.</div>;
     }
     if (activeTab === 'Configurações') {
-      // ... (keep existing code)
+      return <div className="text-neutral-400 p-4">Configurações em desenvolvimento.</div>;
     }
     return <div className="text-neutral-400 p-4">Conteúdo para {activeTab} em desenvolvimento.</div>;
   };
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 flex font-sans">
-      {/* Sidebar Overlay */}
       <AnimatePresence>
         {isSidebarOpen && (
           <motion.div 
@@ -98,7 +148,6 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Sidebar */}
       <motion.nav 
         className={`fixed inset-y-0 left-0 z-50 w-64 bg-neutral-950 border-r border-neutral-800 p-6 flex flex-col gap-8 md:static md:translate-x-0 transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
