@@ -110,6 +110,21 @@ export default function App() {
         </div>
       );
     }
+    if (activeTab === 'Configurações') {
+      return (
+        <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-xl space-y-4">
+          <h3 className="font-bold text-lg mb-4">Configurações do Mordomo</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" placeholder="Nome" value={config.name} onChange={e => setConfig({...config, name: e.target.value})} className="w-full bg-neutral-800 p-3 rounded" />
+            <input type="text" placeholder="Nome da Filha" value={config.daughterName} onChange={e => setConfig({...config, daughterName: e.target.value})} className="w-full bg-neutral-800 p-3 rounded" />
+            <textarea placeholder="História Curta" value={config.shortStory} onChange={e => setConfig({...config, shortStory: e.target.value})} className="w-full bg-neutral-800 p-3 rounded col-span-full" rows={3} />
+            <input type="text" placeholder="PayPal Email" value={config.paypalEmail} onChange={e => setConfig({...config, paypalEmail: e.target.value})} className="w-full bg-neutral-800 p-3 rounded" />
+            <input type="text" placeholder="Chave Pix" value={config.pixKey} onChange={e => setConfig({...config, pixKey: e.target.value})} className="w-full bg-neutral-800 p-3 rounded" />
+            <input type="text" placeholder="Meta do Dia" value={config.dailyGoal} onChange={e => setConfig({...config, dailyGoal: e.target.value})} className="w-full bg-neutral-800 p-3 rounded col-span-full" />
+          </div>
+        </div>
+      );
+    }
     return <div className="text-neutral-400 p-4">Conteúdo para {activeTab} em desenvolvimento.</div>;
   };
 
