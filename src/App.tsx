@@ -9,9 +9,11 @@ import { motion, AnimatePresence } from 'motion/react';
 import { AppConfig, DailyMission, QueueItem, ConnectedAccount, PublicationQueueItem } from './types';
 import { getConfig, saveConfig } from './lib/store';
 import { runAutonomousEngine } from './lib/autonomousEngine';
+import { generateContent } from './lib/ai';
 import { CanaisDePublicacao } from './components/CanaisDePublicacao';
 import { PublicationDashboard } from './components/PublicationDashboard';
 import { Settings as SettingsComponent } from './components/Settings';
+import { HojeDashboard } from './components/HojeDashboard';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('Hoje');
@@ -19,7 +21,7 @@ export default function App() {
   const [mission, setMission] = useState<DailyMission | null>(null);
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [config, setConfig] = useState<AppConfig>(getConfig() || {
-    name: 'Fabio',
+    name: 'Fábio Schwingel',
     shortStory: '',
     urgencyContext: '',
     currentFinancialSituation: '',
@@ -29,19 +31,23 @@ export default function App() {
     facebook: '',
     youtube: '',
     paypalEmail: '',
-    paypalLink: '',
+    paypalLink: 'https://www.paypal.com/donate/?hosted_button_id=QFNBCLB7HH3QE',
     revolutDetails: '',
-    pixKey: '',
+    pixKey: '01244056065',
     currentCampaignObjective: '',
     targetAudience: '',
     preferredLanguage: 'pt',
     preferredTone: 'emocional',
-    daughterName: '',
+    daughterName: 'Victoria',
     dailyGoal: '',
-    automaticMode: false
+    automaticMode: false,
+    generationMode: 'conversao'
   });
 
   const [publicationQueue, setPublicationQueue] = useState<PublicationQueueItem[]>([]);
+  const [isGeneratingToday, setIsGeneratingToday] = useState(false);
+  const [generatedTodayData, setGeneratedTodayData] = useState<any>(null);
+  const [todayError, setTodayError] = useState<string | null>(null);
 
   useEffect(() => {
     saveConfig(config);
@@ -55,6 +61,62 @@ export default function App() {
     { name: 'Relatórios', icon: History },
     { name: 'Configurações', icon: Settings },
   ];
+
+  const handleGenerateToday = async () => {
+    setActiveTab('Hoje');
+    setIsGeneratingToday(true);
+    setTodayError(null);
+    
+    try {
+      const isConversao = config.generationMode === 'conversao';
+      const linkDoacao = config.paypalLink || 'https://www.paypal.com/donate/?hosted_button_id=QFNBCLB7HH3QE';
+      const chavePix = config.pixKey || '01244056065';
+      const nomePix = config.name || 'Fábio Schwingel';
+      
+      const prompt = `Gere o conteúdo diário para o Fabio, considerando:
+      - Filha: Victoria (TEA)
+      - Projetos: Conecta TEA e Triagem TEA IA
+      - Objetivo: ${isConversao ? 'Captação de recursos/doações EXTREMAMENTE URGENTE' : 'Crescimento e engajamento'}
+      - Tom: Emocional e humano
+      - Idioma: Português do Brasil
+      ${isConversao ? `- OBRIGATÓRIO: O campo 'cta' DEVE conter o link de doação do PayPal (${linkDoacao}) E a chave Pix (CPF: ${chavePix} - Nome: ${nomePix})` : ''}
+      
+      Retorne APENAS um JSON válido com a seguinte estrutura exata:
+      {
+        "missao": "Missão do dia (foco e objetivo)",
+        "post": "Conteúdo do post pronto",
+        "legenda": "Legenda pronta para o post",
+        "cta": "${isConversao ? 'Call to action forte e emocional INCLUINDO o link do PayPal e a chave Pix' : 'Call to action pronto'}",
+        "hashtags": "5 hashtags relevantes",
+        "sugestaoStory": "Ideia e roteiro curto para um story",
+        "sugestaoVideo": "Ideia e roteiro curto para um vídeo curto (Reels/TikTok)"
+      }`;
+
+      const responseText = await generateContent(prompt, config, "Conteúdo Diário (Hoje)");
+      
+      const cleanedText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+      const data = JSON.parse(cleanedText);
+      
+      // Garantia programática de que os links estão no CTA se for modo conversão
+      if (isConversao) {
+        let appendedCTA = false;
+        if (!data.cta.includes(linkDoacao)) {
+          data.cta = `${data.cta}\n\n👉 Apoie nossa causa via PayPal: ${linkDoacao}`;
+          appendedCTA = true;
+        }
+        if (!data.cta.includes(chavePix)) {
+          data.cta = `${data.cta}${appendedCTA ? '\n' : '\n\n'}👉 Ou doe via Pix (CPF): ${chavePix} - ${nomePix}`;
+        }
+      }
+      
+      setGeneratedTodayData(data);
+    } catch (error) {
+      console.error("Error generating today content:", error);
+      setTodayError("Não foi possível gerar o conteúdo agora. Tente novamente.");
+    } finally {
+      setIsGeneratingToday(false);
+    }
+  };
 
   const handleAutonomousExecution = async () => {
     const result = await runAutonomousEngine(config);
@@ -96,7 +158,13 @@ export default function App() {
 
   const renderTabContent = () => {
     if (activeTab === 'Hoje') {
-      return <div className="text-neutral-400 p-4">Conteúdo para Hoje em desenvolvimento.</div>;
+      return <HojeDashboard 
+        config={config} 
+        isGenerating={isGeneratingToday} 
+        generatedData={generatedTodayData} 
+        error={todayError} 
+        onGenerate={handleGenerateToday} 
+      />;
     }
     if (activeTab === 'Canais de Publicação') {
       return <CanaisDePublicacao />;
@@ -175,7 +243,10 @@ export default function App() {
               <p className="text-neutral-500 text-sm md:text-base">Sua central de captação, crescimento e execução</p>
             </div>
           </div>
-          <button className="flex items-center gap-2 px-4 py-3 md:px-6 md:py-3 bg-teal-600 rounded-lg font-bold hover:bg-teal-500 transition-all text-sm md:text-base">
+          <button 
+            onClick={handleGenerateToday}
+            className="flex items-center gap-2 px-4 py-3 md:px-6 md:py-3 bg-teal-600 rounded-lg font-bold hover:bg-teal-500 transition-all text-sm md:text-base"
+          >
             <Play size={20} /> <span className="hidden md:inline">GERAR RESULTADO HOJE</span><span className="md:hidden">GERAR</span>
           </button>
         </header>
