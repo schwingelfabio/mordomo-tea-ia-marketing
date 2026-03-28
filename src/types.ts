@@ -18,6 +18,7 @@ export interface AppConfig {
   preferredTone: 'emocional' | 'verdadeiro' | 'direto' | 'inspirador';
   daughterName: string;
   dailyGoal: string;
+  automaticMode: boolean;
 }
 
 export interface ConnectedAccount {

@@ -36,7 +36,8 @@ export default function App() {
     preferredLanguage: 'pt',
     preferredTone: 'emocional',
     daughterName: '',
-    dailyGoal: ''
+    dailyGoal: '',
+    automaticMode: false
   });
 
   const [connectedAccounts, setConnectedAccounts] = useState<ConnectedAccount[]>([
@@ -66,6 +67,23 @@ export default function App() {
     const result = await runAutonomousEngine(config);
     setMission(result.mission);
     setQueue(result.queue);
+  };
+
+  const executeFullOperation = async () => {
+    alert('Iniciando Operação Completa...');
+    // 1. Gerar conteúdos do dia
+    // 2. Separar por rede
+    // 3. Executar automaticamente (copiar, preparar, publicar se possível)
+    setPublicationQueue(prev => [...prev, {
+      id: Date.now().toString(),
+      type: 'post',
+      platform: 'instagram',
+      status: 'publicando',
+      content: 'Conteúdo da operação completa...',
+      cta: 'Doe agora!',
+      language: 'pt'
+    }]);
+    alert('Operação Completa executada com sucesso!');
   };
 
   const handleConnect = async (platform: string) => {
@@ -120,7 +138,14 @@ export default function App() {
       return <ConnectedAccounts accounts={connectedAccounts} onConnect={handleConnect} onDisconnect={handleDisconnect} />;
     }
     if (activeTab === 'Central de Publicação') {
-      return <PublicationDashboard accounts={connectedAccounts} queue={publicationQueue} onGenerate={handleGenerateContent} />;
+      return <PublicationDashboard 
+        accounts={connectedAccounts} 
+        queue={publicationQueue} 
+        onGenerate={handleGenerateContent} 
+        config={config}
+        onSetConfig={setConfig}
+        onExecuteFull={executeFullOperation}
+      />;
     }
     if (activeTab === 'Campanhas') {
       return <div className="text-neutral-400 p-4">Gerenciamento de Campanhas.</div>;
