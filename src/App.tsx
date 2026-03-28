@@ -71,7 +71,10 @@ export default function App() {
     const linkDoacao = config.paypalLink || 'https://www.paypal.com/donate/?hosted_button_id=QFNBCLB7HH3QE';
     const chavePix = config.pixKey || '01244056065';
     const nomePix = config.name || 'Fábio Schwingel';
-    const revolut = config.revolutDetails || 'Revolut: @fabioschwingel';
+    
+    // English specific donation details
+    const englishPaypal = 'fabiopalacioschwingel@gmail.com';
+    const englishRevolut = 'Bank: Revolut\nName: FABIO SCHWINGEL\nAccount: 6136335848\nBic: REVOSGS2';
 
     try {
       const prompt = `Gere o conteúdo diário para o Fabio, considerando:
@@ -81,7 +84,7 @@ export default function App() {
       
       DIRETRIZES DE IDIOMA E CONVERSÃO:
       - PORTUGUÊS: Linguagem emocional brasileira. ${isConversao ? `OBRIGATÓRIO priorizar PIX e PayPal no CTA. Chave Pix: ${chavePix} (${nomePix}). PayPal: ${linkDoacao}` : ''}
-      - INGLÊS: Linguagem mais direta e internacional. ${isConversao ? `OBRIGATÓRIO priorizar PayPal e Revolut no CTA. PayPal: ${linkDoacao}. Revolut: ${revolut}` : ''}
+      - INGLÊS: Linguagem mais direta e internacional. ${isConversao ? `OBRIGATÓRIO priorizar PayPal e Revolut no CTA. PayPal: ${englishPaypal}. Revolut details:\n${englishRevolut}` : ''}
       
       DIRETRIZES DE REDE SOCIAL (Para ambos os idiomas):
       - Instagram: texto mais emocional e com emojis.
@@ -124,8 +127,8 @@ export default function App() {
           if (!data.pt.cta.includes(linkDoacao)) data.pt.cta += `\n👉 PayPal: ${linkDoacao}`;
         }
         if (data.en && data.en.cta) {
-          if (!data.en.cta.includes(linkDoacao)) data.en.cta += `\n\n👉 PayPal: ${linkDoacao}`;
-          if (!data.en.cta.includes('Revolut') && !data.en.cta.includes(revolut)) data.en.cta += `\n👉 Revolut: ${revolut}`;
+          if (!data.en.cta.includes(englishPaypal)) data.en.cta += `\n\n👉 PayPal: ${englishPaypal}`;
+          if (!data.en.cta.includes('Revolut')) data.en.cta += `\n👉 ${englishRevolut.replace(/\n/g, ' | ')}`;
         }
       }
       
@@ -170,7 +173,7 @@ export default function App() {
               post: "Friends and family, today is a day to celebrate Victoria's small victories! Every step she takes fills us with pride.",
               caption: "Our community has been amazing. To continue with therapies, we need your strength. Any contribution helps us keep hope alive."
             },
-            cta: `If you can help, any amount makes a difference ❤️\n\n👉 PayPal: ${linkDoacao}\n👉 Revolut: ${revolut}`,
+            cta: `If you can help, any amount makes a difference ❤️\n\n👉 PayPal: ${englishPaypal}\n👉 ${englishRevolut.replace(/\n/g, ' | ')}`,
             hashtags: "#autism #family #help #love #conectatea",
             story: "Today is a day of victories! 🎂 Show a real, unfiltered moment of your routine with Victoria today. Talk about an overcome challenge.",
             video: "Emotional video (15s) with soft background music, showing you working on the Conecta TEA project while explaining the reason behind it all."

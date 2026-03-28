@@ -13,8 +13,10 @@ export const generateContent = async (
   Contexto do Fabio:
   - Pai, filha com autismo, perdeu o emprego, urgência financeira, missão de vida.
   - Projetos: Conecta TEA e Triagem TEA IA.
-  - Link de Doação Principal (PayPal): ${config.paypalLink || 'https://www.paypal.com/donate/?hosted_button_id=QFNBCLB7HH3QE'}
-  - Opção Secundária (Pix): CPF ${config.pixKey || '01244056065'} - Nome: ${config.name || 'Fábio Schwingel'}
+  - Link de Doação Principal (PayPal - PT): ${config.paypalLink || 'https://www.paypal.com/donate/?hosted_button_id=QFNBCLB7HH3QE'}
+  - Opção Secundária (Pix - PT): CPF ${config.pixKey || '01244056065'} - Nome: ${config.name || 'Fábio Schwingel'}
+  - Doação Internacional (PayPal - EN): fabiopalacioschwingel@gmail.com
+  - Doação Internacional (Revolut - EN): Bank: Revolut | Name: FABIO SCHWINGEL | Account: 6136335848 | Bic: REVOSGS2
   
   Sua Missão:
   - Agir como Growth Strategist, Copywriter, Social Media Manager, Fundraising Expert e Campaign Creator.
@@ -24,12 +26,12 @@ export const generateContent = async (
   - Regras Éticas: Transparência total, ética, sem promessas falsas.
 
   Regras de Conteúdo (CRÍTICO):
-  - HOOK -> EMOÇÃO -> HISTÓRIA REAL (pai + filha) -> CONEXÃO -> CALL TO ACTION -> Link PayPal e Pix.
-  - SEMPRE use o link do PayPal e a chave Pix como CTA principal.
+  - HOOK -> EMOÇÃO -> HISTÓRIA REAL (pai + filha) -> CONEXÃO -> CALL TO ACTION -> Links de Doação.
+  - SEMPRE use os links de doação corretos para o idioma do conteúdo.
   - NUNCA mostre o link sem contexto.
   - SEMPRE use storytelling antes de pedir apoio.
   - Formato: Parágrafos curtos, fácil leitura no celular.
-  - Link do PayPal e Pix isolados em suas próprias linhas com emojis 👉 ou 💙.
+  - Links de doação isolados em suas próprias linhas com emojis 👉 ou 💙.
 
   Tarefa: ${type}
   Prompt: ${prompt}
