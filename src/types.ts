@@ -43,6 +43,22 @@ export interface Campaign {
   id: string;
   name: string;
   objective: string;
+  targetAudience: string;
+  tone: string;
   narrative: string;
-  contentItems: GeneratedContent[];
+  feedPost: string;
+  videoScript: string;
+  storySequence: string[];
+  privateMessage: string;
+  donationText: string;
+  finalCTA: string;
+  createdAt: string;
+}
+
+export interface QueueItem {
+  id: string;
+  title: string;
+  type: 'post' | 'video' | 'image' | 'dm' | 'campaign' | 'donation';
+  status: 'pending' | 'ready' | 'executed';
+  content: string;
 }
