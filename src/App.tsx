@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { AppConfig, DailyMission, QueueItem, ConnectedAccount, PublicationQueueItem } from './types';
 import { getConfig, saveConfig } from './lib/store';
 import { runAutonomousEngine } from './lib/autonomousEngine';
-import { ConnectedAccounts } from './components/ConnectedAccounts';
+import { CanaisDePublicacao } from './components/CanaisDePublicacao';
 import { PublicationDashboard } from './components/PublicationDashboard';
 import { Settings as SettingsComponent } from './components/Settings';
 
@@ -41,14 +41,6 @@ export default function App() {
     automaticMode: false
   });
 
-  const [connectedAccounts, setConnectedAccounts] = useState<ConnectedAccount[]>([
-    { platform: 'instagram', connected: false, permissions: [], lastSync: 'Nunca' },
-    { platform: 'facebook', connected: false, permissions: [], lastSync: 'Nunca' },
-    { platform: 'linkedin', connected: false, permissions: [], lastSync: 'Nunca' },
-    { platform: 'youtube', connected: false, permissions: [], lastSync: 'Nunca' },
-    { platform: 'tiktok', connected: false, permissions: [], lastSync: 'Nunca' },
-  ]);
-
   const [publicationQueue, setPublicationQueue] = useState<PublicationQueueItem[]>([]);
 
   useEffect(() => {
@@ -57,7 +49,7 @@ export default function App() {
 
   const tabs = [
     { name: 'Hoje', icon: LayoutDashboard },
-    { name: 'Contas Conectadas', icon: ShieldCheck },
+    { name: 'Canais de Publicação', icon: ShieldCheck },
     { name: 'Central de Publicação', icon: FileText },
     { name: 'Campanhas', icon: Target },
     { name: 'Relatórios', icon: History },
@@ -81,14 +73,12 @@ export default function App() {
       platform: 'instagram',
       status: 'publicando',
       content: 'Conteúdo da operação completa...',
+      caption: 'Legenda...',
+      hashtags: '#teste',
       cta: 'Doe agora!',
       language: 'pt'
     }]);
     alert('Operação Completa executada com sucesso!');
-  };
-
-  const handleToggleConnection = (platform: string) => {
-    setConnectedAccounts(prev => prev.map(a => a.platform === platform ? { ...a, connected: !a.connected } : a));
   };
 
   const handleGenerateContent = (data: any) => {
@@ -108,12 +98,11 @@ export default function App() {
     if (activeTab === 'Hoje') {
       return <div className="text-neutral-400 p-4">Conteúdo para Hoje em desenvolvimento.</div>;
     }
-    if (activeTab === 'Contas Conectadas') {
-      return <ConnectedAccounts accounts={connectedAccounts} onToggleConnection={handleToggleConnection} />;
+    if (activeTab === 'Canais de Publicação') {
+      return <CanaisDePublicacao />;
     }
     if (activeTab === 'Central de Publicação') {
       return <PublicationDashboard 
-        accounts={connectedAccounts} 
         queue={publicationQueue} 
         onGenerate={handleGenerateContent} 
         config={config}

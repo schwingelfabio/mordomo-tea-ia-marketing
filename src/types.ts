@@ -21,15 +21,6 @@ export interface AppConfig {
   automaticMode: boolean;
 }
 
-export interface ConnectedAccount {
-  platform: 'instagram' | 'facebook' | 'tiktok' | 'youtube' | 'linkedin';
-  connected: boolean;
-  accountName?: string;
-  profileLink?: string;
-  permissions: string[];
-  lastSync: string;
-}
-
 export type PublicationStatus = 'pronto' | 'publicando' | 'publicado' | 'agendado' | 'falhou' | 'reconectar' | 'manual';
 
 export interface PublicationQueueItem {
@@ -39,7 +30,10 @@ export interface PublicationQueueItem {
   status: PublicationStatus;
   scheduledFor?: string;
   content: string;
+  caption: string;
+  hashtags: string;
   cta: string;
+  script?: string;
   language: 'en' | 'pt';
   error?: string;
 }
