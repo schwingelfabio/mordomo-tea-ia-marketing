@@ -15,7 +15,7 @@ export interface AppConfig {
   currentCampaignObjective: string;
   targetAudience: string;
   preferredLanguage: 'en' | 'pt';
-  preferredTone: 'professional' | 'emotional' | 'urgent' | 'trust-building';
+  preferredTone: 'emocional' | 'verdadeiro' | 'direto' | 'inspirador';
 }
 
 export interface GeneratedContent {
@@ -24,26 +24,13 @@ export interface GeneratedContent {
   title: string;
   content: string;
   platform?: string;
-  language: 'en' | 'pt';
-  variation: 'strong' | 'soft' | 'viral' | 'short' | 'high-trust';
+  language: 'pt';
   timestamp: number;
 }
 
-export interface Campaign {
-  id: string;
-  name: string;
-  emotionalAngle: string;
-  message: string;
-  contentPack: GeneratedContent[];
-}
-
-export interface DailyPlan {
+export interface DailyMission {
   date: string;
-  postIdea: string;
-  videoIdea: string;
-  storySequence: string;
-  outreachTargets: string[];
-  donationCTA: string;
-  trustAngle: string;
+  mission: string;
+  tasks: string[];
   priority: string;
 }
