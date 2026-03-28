@@ -83,9 +83,9 @@ export default function App() {
             )}
             <button 
               onClick={handleAutonomousExecution}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-teal-900/30 text-teal-400 rounded-lg hover:bg-teal-900/50 mt-4"
+              className="w-full flex items-center justify-center gap-2 px-4 py-4 bg-teal-900/30 text-teal-400 rounded-lg hover:bg-teal-900/50 mt-4 min-h-[48px]"
             >
-              <Zap size={16} /> Executar tudo automaticamente
+              <Zap size={20} /> Executar tudo automaticamente
             </button>
           </div>
           
@@ -96,12 +96,12 @@ export default function App() {
               </h3>
               <div className="space-y-3">
                 {queue.map(item => (
-                  <div key={item.id} className="bg-neutral-800 p-4 rounded-lg flex justify-between items-center">
+                  <div key={item.id} className="bg-neutral-800 p-4 rounded-lg flex justify-between items-center min-h-[60px]">
                     <div>
                       <p className="font-bold">{item.title}</p>
                       <span className="text-xs text-neutral-500 uppercase">{item.type}</span>
                     </div>
-                    <button className="px-3 py-1 bg-teal-600 rounded text-sm font-bold">Executar</button>
+                    <button className="px-4 py-2 bg-teal-600 rounded text-sm font-bold min-h-[44px]">Executar</button>
                   </div>
                 ))}
               </div>
@@ -115,12 +115,12 @@ export default function App() {
         <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-xl space-y-4">
           <h3 className="font-bold text-lg mb-4">Configurações do Mordomo</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="text" placeholder="Nome" value={config.name} onChange={e => setConfig({...config, name: e.target.value})} className="w-full bg-neutral-800 p-3 rounded" />
-            <input type="text" placeholder="Nome da Filha" value={config.daughterName} onChange={e => setConfig({...config, daughterName: e.target.value})} className="w-full bg-neutral-800 p-3 rounded" />
-            <textarea placeholder="História Curta" value={config.shortStory} onChange={e => setConfig({...config, shortStory: e.target.value})} className="w-full bg-neutral-800 p-3 rounded col-span-full" rows={3} />
-            <input type="text" placeholder="PayPal Email" value={config.paypalEmail} onChange={e => setConfig({...config, paypalEmail: e.target.value})} className="w-full bg-neutral-800 p-3 rounded" />
-            <input type="text" placeholder="Chave Pix" value={config.pixKey} onChange={e => setConfig({...config, pixKey: e.target.value})} className="w-full bg-neutral-800 p-3 rounded" />
-            <input type="text" placeholder="Meta do Dia" value={config.dailyGoal} onChange={e => setConfig({...config, dailyGoal: e.target.value})} className="w-full bg-neutral-800 p-3 rounded col-span-full" />
+            <input type="text" placeholder="Nome" value={config.name} onChange={e => setConfig({...config, name: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
+            <input type="text" placeholder="Nome da Filha" value={config.daughterName} onChange={e => setConfig({...config, daughterName: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
+            <textarea placeholder="História Curta" value={config.shortStory} onChange={e => setConfig({...config, shortStory: e.target.value})} className="w-full bg-neutral-800 p-4 rounded col-span-full min-h-[100px]" rows={3} />
+            <input type="text" placeholder="PayPal Email" value={config.paypalEmail} onChange={e => setConfig({...config, paypalEmail: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
+            <input type="text" placeholder="Chave Pix" value={config.pixKey} onChange={e => setConfig({...config, pixKey: e.target.value})} className="w-full bg-neutral-800 p-4 rounded min-h-[48px]" />
+            <input type="text" placeholder="Meta do Dia" value={config.dailyGoal} onChange={e => setConfig({...config, dailyGoal: e.target.value})} className="w-full bg-neutral-800 p-4 rounded col-span-full min-h-[48px]" />
           </div>
         </div>
       );
