@@ -67,12 +67,12 @@ export default function App() {
     setIsGeneratingToday(true);
     setTodayError(null);
     
+    const isConversao = config.generationMode === 'conversao';
+    const linkDoacao = config.paypalLink || 'https://www.paypal.com/donate/?hosted_button_id=QFNBCLB7HH3QE';
+    const chavePix = config.pixKey || '01244056065';
+    const nomePix = config.name || 'Fábio Schwingel';
+
     try {
-      const isConversao = config.generationMode === 'conversao';
-      const linkDoacao = config.paypalLink || 'https://www.paypal.com/donate/?hosted_button_id=QFNBCLB7HH3QE';
-      const chavePix = config.pixKey || '01244056065';
-      const nomePix = config.name || 'Fábio Schwingel';
-      
       const prompt = `Gere o conteúdo diário para o Fabio, considerando:
       - Filha: Victoria (TEA)
       - Projetos: Conecta TEA e Triagem TEA IA
@@ -110,11 +110,26 @@ export default function App() {
       }
       
       setGeneratedTodayData(data);
+      setIsGeneratingToday(false);
     } catch (error) {
       console.error("Error generating today content:", error);
-      setTodayError("Não foi possível gerar o conteúdo agora. Tente novamente.");
-    } finally {
-      setIsGeneratingToday(false);
+      
+      // SIMULAÇÃO DE FALLBACK GARANTIDA (Conforme solicitado)
+      // Se a IA falhar por limite de tokens ou erro de API, mostramos o resultado simulado
+      // para garantir que a interface funcione visualmente.
+      setTimeout(() => {
+        const resultadoSimulado = {
+          missao: "Gerar conexão emocional e arrecadar apoio para os tratamentos da Victoria.",
+          post: "Hoje é um dia especial. A Victória é a razão de tudo que eu faço. Cada pequeno avanço dela é uma vitória gigante para nós. A jornada do autismo nos ensina a valorizar cada detalhe, mas também traz desafios imensos que não podemos vencer sozinhos.",
+          legenda: "Estamos tentando manter os tratamentos e terapias em dia. Não tem sido fácil, mas a esperança é o que nos move. 🙏 Se você acompanha nossa história e acredita no projeto Conecta TEA, sua ajuda hoje seria fundamental.",
+          cta: `Se puder ajudar, qualquer valor faz diferença ❤️\n\n👉 Apoie nossa causa via PayPal: ${linkDoacao}\n👉 Ou doe via Pix (CPF): ${chavePix} - ${nomePix}`,
+          hashtags: "#autismo #familia #ajuda #amor #conectatea",
+          sugestaoStory: "Hoje é um dia de vitórias! 🎂 Mostre um momento real e sem filtros da rotina com a Victoria hoje. Fale sobre um desafio superado.",
+          sugestaoVideo: "Vídeo emocional (15s) com uma música suave ao fundo, mostrando você trabalhando no projeto Conecta TEA enquanto explica o porquê de tudo isso."
+        };
+        setGeneratedTodayData(resultadoSimulado);
+        setIsGeneratingToday(false);
+      }, 1500);
     }
   };
 
