@@ -17,11 +17,12 @@ export const PublicationDashboard: React.FC<Props> = ({ queue, onGenerate, confi
 
   const handleGenerate = (data: any) => {
     onGenerate(data);
+    // Placeholder for actual generation logic
     setGeneratedContent({
       post: "Post gerado...",
-      caption: "Legenda gerada...",
+      caption: data.isHighImpact ? "HISTÓRIA EMOCIONAL: " + config.shortStory : "Legenda gerada...",
       hashtags: "#hashtags #geradas",
-      cta: "CTA gerado...",
+      cta: data.mode === 'conversao' ? "DOAR AGORA: " + config.paypalLink : "CTA gerado...",
       script: "Roteiro gerado..."
     });
   };
@@ -30,7 +31,16 @@ export const PublicationDashboard: React.FC<Props> = ({ queue, onGenerate, confi
 
   return (
     <div className="space-y-6">
-      <ContentGenerator onGenerate={handleGenerate} />
+      <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-xl">
+        <h3 className="font-bold text-lg mb-2">Melhor Ação do Dia</h3>
+        <p className="text-neutral-400 text-sm">
+          {config.generationMode === 'crescimento' 
+            ? "Foco em engajamento: Responda a 5 comentários e compartilhe uma história de superação."
+            : "Foco em conversão: Publique o post de doação com a história da família de hoje."}
+        </p>
+      </div>
+
+      <ContentGenerator onGenerate={handleGenerate} config={config} />
 
       {generatedContent && (
         <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-xl space-y-4">

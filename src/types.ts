@@ -19,6 +19,7 @@ export interface AppConfig {
   daughterName: string;
   dailyGoal: string;
   automaticMode: boolean;
+  generationMode: 'crescimento' | 'conversao';
 }
 
 export type PublicationStatus = 'pronto' | 'publicando' | 'publicado' | 'agendado' | 'falhou' | 'reconectar' | 'manual';

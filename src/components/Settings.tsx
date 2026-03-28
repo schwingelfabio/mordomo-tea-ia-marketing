@@ -60,6 +60,23 @@ export const Settings: React.FC<Props> = ({ config, onSetConfig }) => {
           />
         </div>
         <div className="md:col-span-2">
+          <label className="block text-sm text-neutral-400 mb-1">Modo de Geração</label>
+          <div className="flex gap-4">
+            <button 
+              onClick={() => onSetConfig({ ...config, generationMode: 'crescimento' })}
+              className={`flex-1 p-3 rounded border ${config.generationMode === 'crescimento' ? 'bg-teal-900/30 border-teal-700 text-teal-400' : 'bg-neutral-800 border-neutral-700'}`}
+            >
+              Modo Crescimento
+            </button>
+            <button 
+              onClick={() => onSetConfig({ ...config, generationMode: 'conversao' })}
+              className={`flex-1 p-3 rounded border ${config.generationMode === 'conversao' ? 'bg-teal-900/30 border-teal-700 text-teal-400' : 'bg-neutral-800 border-neutral-700'}`}
+            >
+              Modo Conversão (DOAÇÃO)
+            </button>
+          </div>
+        </div>
+        <div className="md:col-span-2">
           <label className="block text-sm text-neutral-400 mb-1">Objetivo principal</label>
           <input 
             type="text" 
