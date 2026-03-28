@@ -13,7 +13,9 @@ export const generateContent = async (
   Contexto do Fabio:
   - Pai, filha com autismo, perdeu o emprego, urgência financeira, missão de vida.
   - Projetos: Conecta TEA e Triagem TEA IA.
-  - Objetivo: Gerar visibilidade, confiança e doações (PayPal, Revolut, Pix).
+  - Objetivo: Gerar visibilidade, confiança e doações.
+  - Link de Doação Principal (PayPal): https://www.paypal.com/donate/?hosted_button_id=QFNBCLB7HH3QE
+  - Opção Secundária: Revolut (Name: Fabio Schwingel, Account: 6136335848, BIC: REVOSG2)
   - Situação Financeira: ${config.currentFinancialSituation}
   
   Sua Missão:
@@ -24,16 +26,17 @@ export const generateContent = async (
   - Regras Éticas: Transparência total, ética, sem promessas falsas.
 
   Motor de Decisão Estratégica (Prioridades):
-  1. Dinheiro Rápido: Pedidos diretos de doação, campanhas de urgência.
+  1. Dinheiro Rápido: Pedidos diretos de doação (PayPal), campanhas de urgência.
   2. Confiança: Histórias pessoais, transparência, provas sociais.
   3. Crescimento: Conteúdo viral, compartilhamentos, parcerias.
   4. Relacionamento: DMs, respostas, engajamento genuíno.
 
-  Lógica de Decisão:
-  - Se urgência financeira alta: Priorize pedido direto de doação (Pix/PayPal) + História pessoal forte.
-  - Se necessidade de confiança: Priorize vídeo/story mostrando a realidade da filha ou o impacto do projeto.
-  - Se necessidade de crescimento: Priorize post de feed com gancho forte para compartilhamento.
-  - Se necessidade de relacionamento: Priorize DM personalizada para seguidores engajados.
+  Regras de Conteúdo:
+  - SEMPRE use o link do PayPal como CTA principal.
+  - NUNCA mostre o link sem contexto.
+  - SEMPRE use storytelling antes de pedir apoio.
+  - Formato: Parágrafos curtos, fácil leitura no celular.
+  - Link do PayPal isolado em sua própria linha com emoji 👉.
 
   Tarefa: ${type}
   Prompt: ${prompt}

@@ -60,6 +60,11 @@ export default function App() {
     setQueue(result.queue);
   };
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    alert('Copiado para a área de transferência!');
+  };
+
   const renderTabContent = () => {
     if (activeTab === 'Hoje') {
       return (
@@ -76,6 +81,11 @@ export default function App() {
                   <ul className="list-disc list-inside text-neutral-400 text-sm mt-2">
                     {mission.tasks.map((task, i) => <li key={i}>{task}</li>)}
                   </ul>
+                </div>
+                <div className="bg-neutral-800 p-4 rounded-lg">
+                  <h4 className="font-bold text-sm text-neutral-300">Post Principal: {mission.mainPost.title}</h4>
+                  <p className="text-neutral-400 text-sm mt-2">{mission.mainPost.content}</p>
+                  <button onClick={() => copyToClipboard(mission.mainPost.content)} className="mt-2 text-xs text-teal-400 hover:text-teal-300 font-bold">Copiar Post</button>
                 </div>
               </div>
             ) : (
@@ -101,7 +111,7 @@ export default function App() {
                       <p className="font-bold">{item.title}</p>
                       <span className="text-xs text-neutral-500 uppercase">{item.type}</span>
                     </div>
-                    <button className="px-4 py-2 bg-teal-600 rounded text-sm font-bold min-h-[44px]">Executar</button>
+                    <button onClick={() => copyToClipboard(item.content)} className="px-4 py-2 bg-teal-600 rounded text-sm font-bold min-h-[44px]">Copiar</button>
                   </div>
                 ))}
               </div>

@@ -3,19 +3,15 @@ import { generateContent } from "./ai";
 
 export const runAutonomousEngine = async (config: AppConfig): Promise<{ mission: DailyMission; queue: QueueItem[] }> => {
   // 1. Generate Daily Mission
-  const missionPrompt = `Crie uma missão diária para o Fabio, pai de ${config.daughterName}, focado no projeto ${config.currentCampaignObjective}.
+  const missionPrompt = `Crie uma missão diária completa para o Fabio, pai de ${config.daughterName}, focado no projeto ${config.currentCampaignObjective}.
   Priorize: 1. Dinheiro rápido, 2. Confiança, 3. Crescimento, 4. Relacionamento.
-  Defina o foco principal, tarefas e a melhor ação do dia.`;
+  
+  Retorne APENAS um JSON com os campos:
+  mission, focus, tasks (array), recommendedAction, mainPost (object: title, content), commentStrategies (array: title, content), dmScripts (array: title, content), storySequence (array: title, content).`;
   
   const missionText = await generateContent(missionPrompt, config, "DailyMission");
-  
-  const mission: DailyMission = {
-    date: new Date().toISOString(),
-    mission: missionText,
-    focus: "Conversão e Confiança",
-    tasks: ["Postar história real", "Pedir doação via Pix", "Enviar 5 DMs"],
-    recommendedAction: "Focar na urgência financeira com transparência."
-  };
+  const mission: DailyMission = JSON.parse(missionText);
+  mission.date = new Date().toISOString();
 
   // 2. Generate Campaign
   const campaignPrompt = `Crie uma campanha completa para o projeto ${config.currentCampaignObjective}.

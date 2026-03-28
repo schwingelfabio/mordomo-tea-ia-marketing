@@ -22,7 +22,7 @@ export interface AppConfig {
 
 export interface GeneratedContent {
   id: string;
-  type: 'post' | 'video' | 'image' | 'dm' | 'campaign' | 'donation';
+  type: 'post' | 'video' | 'image' | 'dm' | 'campaign' | 'donation' | 'comment' | 'story';
   title: string;
   content: string;
   createdAt: string;
@@ -37,6 +37,10 @@ export interface DailyMission {
   focus: string;
   tasks: string[];
   recommendedAction: string;
+  mainPost: GeneratedContent;
+  commentStrategies: GeneratedContent[];
+  dmScripts: GeneratedContent[];
+  storySequence: GeneratedContent[];
 }
 
 export interface Campaign {
