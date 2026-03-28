@@ -16,21 +16,33 @@ export interface AppConfig {
   targetAudience: string;
   preferredLanguage: 'en' | 'pt';
   preferredTone: 'emocional' | 'verdadeiro' | 'direto' | 'inspirador';
+  daughterName: string;
+  dailyGoal: string;
 }
 
 export interface GeneratedContent {
   id: string;
-  type: 'post' | 'video' | 'image' | 'dm' | 'reply' | 'trust' | 'donation' | 'campaign';
+  type: 'post' | 'video' | 'image' | 'dm' | 'campaign' | 'donation';
   title: string;
   content: string;
-  platform?: string;
-  language: 'pt';
-  timestamp: number;
+  createdAt: string;
+  category?: string;
+  tone: string;
+  language: 'en' | 'pt';
 }
 
 export interface DailyMission {
   date: string;
   mission: string;
+  focus: string;
   tasks: string[];
-  priority: string;
+  recommendedAction: string;
+}
+
+export interface Campaign {
+  id: string;
+  name: string;
+  objective: string;
+  narrative: string;
+  contentItems: GeneratedContent[];
 }

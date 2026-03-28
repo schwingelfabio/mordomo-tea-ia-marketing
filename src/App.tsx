@@ -4,10 +4,11 @@
  */
 
 import { useState, useEffect } from 'react';
-import { LayoutDashboard, FileText, Video, Image as ImageIcon, MessageSquare, ShieldCheck, DollarSign, Target, Settings, Zap, Play } from 'lucide-react';
+import { LayoutDashboard, FileText, Video, Image as ImageIcon, MessageSquare, ShieldCheck, DollarSign, Target, Settings, Zap, Play, History, Bot } from 'lucide-react';
 import { motion } from 'motion/react';
 import { AppConfig } from './types';
 import { getConfig, saveConfig } from './lib/store';
+import { generateContent } from './lib/ai';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('Hoje');
@@ -28,7 +29,9 @@ export default function App() {
     currentCampaignObjective: '',
     targetAudience: '',
     preferredLanguage: 'pt',
-    preferredTone: 'emocional'
+    preferredTone: 'emocional',
+    daughterName: '',
+    dailyGoal: ''
   });
 
   useEffect(() => {
@@ -44,54 +47,47 @@ export default function App() {
     { name: 'Confiança', icon: ShieldCheck },
     { name: 'Doações', icon: DollarSign },
     { name: 'Campanhas', icon: Target },
+    { name: 'Histórico', icon: History },
     { name: 'Configurações', icon: Settings },
   ];
 
+  const handleAutonomousExecution = async () => {
+    // Logic for autonomous execution
+    console.log('Executando modo autônomo...');
+  };
+
   const renderTabContent = () => {
-    if (activeTab === 'Configurações') {
+    if (activeTab === 'Hoje') {
       return (
-        <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-xl space-y-4">
-          <h3 className="font-bold text-lg mb-4">Preferências do Sistema</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-neutral-400 mb-2">Idioma Preferido</label>
-              <select 
-                value={config.preferredLanguage}
-                onChange={(e) => setConfig({...config, preferredLanguage: e.target.value as 'en' | 'pt'})}
-                className="w-full bg-neutral-800 p-2 rounded"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-xl col-span-full">
+            <h3 className="font-bold text-lg mb-2 flex items-center gap-2 text-teal-400">
+              <Bot size={20} /> Missão do Dia
+            </h3>
+            <p className="text-neutral-400 mb-4">Gerar visibilidade e confiança para o Conecta TEA.</p>
+            <div className="flex gap-4">
+              <button 
+                onClick={handleAutonomousExecution}
+                className="flex items-center gap-2 px-4 py-2 bg-teal-900/30 text-teal-400 rounded-lg hover:bg-teal-900/50"
               >
-                <option value="pt">Português</option>
-                <option value="en">English</option>
-              </select>
+                <Zap size={16} /> Executar tudo automaticamente
+              </button>
             </div>
-            <div>
-              <label className="block text-neutral-400 mb-2">Tom Preferido</label>
-              <select 
-                value={config.preferredTone}
-                onChange={(e) => setConfig({...config, preferredTone: e.target.value as any})}
-                className="w-full bg-neutral-800 p-2 rounded"
-              >
-                <option value="emocional">Emocional</option>
-                <option value="verdadeiro">Verdadeiro</option>
-                <option value="direto">Direto</option>
-                <option value="inspirador">Inspirador</option>
-              </select>
-            </div>
+          </div>
+          
+          <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-xl">
+            <h3 className="font-bold text-lg mb-2">Melhor Ação do Dia</h3>
+            <p className="text-neutral-400">Postar história emocional sobre a filha.</p>
+          </div>
+          <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-xl">
+            <h3 className="font-bold text-lg mb-2">Melhor CTA do Dia</h3>
+            <p className="text-neutral-400">"Ajude a continuar nossa missão."</p>
           </div>
         </div>
       );
     }
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-xl col-span-full">
-          <h3 className="font-bold text-lg mb-2">Missão do Dia</h3>
-          <p className="text-neutral-400 mb-4">Gerar visibilidade e confiança para o Conecta TEA.</p>
-          <button className="flex items-center gap-2 px-4 py-2 bg-teal-900/30 text-teal-400 rounded-lg hover:bg-teal-900/50">
-            <Zap size={16} /> Executar tudo automaticamente
-          </button>
-        </div>
-      </div>
-    );
+    // Add other tab contents here...
+    return <div className="text-neutral-400">Conteúdo para {activeTab} em desenvolvimento.</div>;
   };
 
   return (
@@ -119,7 +115,10 @@ export default function App() {
       
       <main className="flex-1 p-8 overflow-y-auto">
         <header className="mb-8 flex justify-between items-center">
-          <h2 className="text-3xl font-bold">{activeTab}</h2>
+          <div>
+            <h2 className="text-3xl font-bold">{activeTab}</h2>
+            <p className="text-neutral-500">Sua central de captação, crescimento e execução</p>
+          </div>
           <button className="flex items-center gap-2 px-6 py-3 bg-teal-600 rounded-lg font-bold hover:bg-teal-500 transition-all">
             <Play size={20} /> GERAR RESULTADO HOJE
           </button>
